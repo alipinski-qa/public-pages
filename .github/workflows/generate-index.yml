@@ -1,0 +1,28 @@
+name: Generate index
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate index.html
+        run: |
+          echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QA Pages</title></head><body><h1>QA Pages</h1><ul>' > index.html
+          find . -name "*.html" ! -name "index.html" | sort | while read f; do
+            f="${f#./}"
+            echo "<li><a href=\"$f\">$f</a></li>" >> index.html
+          done
+          echo '</ul></body></html>' >> index.html
+
+      - name: Commit index.html
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Auto-update index.html"
+          git push
