@@ -12,12 +12,36 @@ jobs:
 
       - name: Generate index.html
         run: |
-          echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>QA Pages</title></head><body><h1>QA Pages</h1><ul>' > index.html
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>QA Pages</title>
+            <link rel="icon" type="image/png" href="favicon.png">
+            <style>
+              body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; background: #f5f5f5; color: #333; }
+              h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+              ul { list-style: none; padding: 0; }
+              li { margin: 8px 0; }
+              li a { display: block; padding: 10px 14px; background: white; border-radius: 6px; text-decoration: none; color: #0969da; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+              li a:hover { background: #0969da; color: white; }
+            </style>
+          </head>
+          <body>
+            <h1>QA Pages</h1>
+            <ul>
+          EOF
           find . -name "*.html" ! -name "index.html" | sort | while read f; do
             f="${f#./}"
-            echo "<li><a href=\"$f\">$f</a></li>" >> index.html
+            echo "    <li><a href=\"$f\">$f</a></li>" >> index.html
           done
-          echo '</ul></body></html>' >> index.html
+          cat >> index.html << 'EOF'
+            </ul>
+          </body>
+          </html>
+          EOF
 
       - name: Commit index.html
         run: |
