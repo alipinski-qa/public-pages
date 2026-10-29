@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--
+    QA test page for External Share for Confluence card rendering.
+    PURPOSE: the Open Graph tags below carry XSS payloads in og:title and
+    og:description. When a link to this page is rendered as a CARD, the card
+    builder must HTML-escape these values. If an alert() fires, the title or
+    description sink is unescaped (stored XSS via card metadata).
+    Markers identify which sink fired and in which origin (document.domain).
+  -->
+
+  <!-- Vector A: HTML injection in og:title -->
+  <meta property="og:title" content="&lt;img src=x onerror=alert('ESFC-XSS-ogtitle@'+document.domain)&gt;">
+
+  <!-- Vector B: attribute/tag breakout in og:description -->
+  <meta property="og:description" content="safe start &quot;&gt;&lt;svg onload=alert('ESFC-XSS-ogdesc-svg@'+document.domain)&gt;&lt;img src=x onerror=alert('ESFC-XSS-ogdesc-img@'+document.domain)&gt; safe end">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sample Company">
+  <meta property="og:url" content="">
+
+  <title>Card test - og:title / og:description injection</title>
+  <style>
+    body { font: 15px/1.5 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; color: #172b4d; }
+    code { background: #f4f5f7; padding: .1em .3em; border-radius: 3px; }
+    h1 { font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <h1>Card metadata injection - og:title &amp; og:description</h1>
+  <p>Sample Company QA harness page. Link to this page from a shared Confluence page and view it as a <strong>card</strong>.</p>
+  <ul>
+    <li><strong>og:title</strong> carries an <code>&lt;img onerror&gt;</code> HTML-injection payload.</li>
+    <li><strong>og:description</strong> carries an attribute/tag breakout (<code>"&gt;&lt;svg onload&gt;</code>).</li>
+  </ul>
+  <p>Expected: the card shows the payloads as inert text. Any <code>alert()</code> means that sink is unescaped.</p>
+</body>
+</html>

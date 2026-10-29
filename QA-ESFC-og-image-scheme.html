@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--
+    QA test page for External Share for Confluence card rendering.
+    PURPOSE: og:image points at a javascript:/data: scheme and a bogus host.
+    The card builder must only accept http(s) image URLs, must not emit the
+    javascript:/data: value into an href/src that becomes clickable, and must
+    not expose the external viewer's IP by hot-linking arbitrary hosts.
+  -->
+
+  <meta property="og:title" content="og:image = dangerous scheme">
+  <meta property="og:description" content="Sample Company card test: og:image is a javascript: scheme. The card must not render it as a clickable/executable image source.">
+
+  <!-- Vector: non-http scheme in og:image -->
+  <meta property="og:image" content="javascript:alert('ESFC-XSS-ogimage-js@'+document.domain)">
+  <!-- Secondary: data: URI image (uncomment-equivalent second case kept visible for the tester) -->
+  <meta property="og:image:secure_url" content="data:text/html,&lt;script&gt;alert('ESFC-XSS-ogimage-data')&lt;/script&gt;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sample Company">
+  <meta property="og:url" content="">
+
+  <title>Card test - og:image dangerous scheme</title>
+  <style>
+    body { font: 15px/1.5 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; color: #172b4d; }
+    code { background: #f4f5f7; padding: .1em .3em; border-radius: 3px; }
+    h1 { font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <h1>Card image - dangerous scheme</h1>
+  <p>Sample Company QA harness page. The <code>og:image</code> here is a <code>javascript:</code> scheme; a second case uses a <code>data:</code> URI.</p>
+  <p>Expected: the card either shows no image or a placeholder, and never emits the scheme value into a clickable/executable sink.</p>
+</body>
+</html>

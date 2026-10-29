@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--
+    QA test page for External Share for Confluence card rendering.
+    PURPOSE: og:image is an SVG that contains onload + <script>. Script in SVG
+    runs only if the file is embedded as a document (inline / <object> / <embed>),
+    not when loaded via <img>. The card builder should render card images via
+    <img> (or a sanitising proxy) so this never executes.
+    NOTE: the absolute URL below assumes GitHub Pages at
+    https://alipinski-qa.github.io/public-pages/ - adjust if the host differs.
+  -->
+
+  <meta property="og:title" content="og:image = SVG with embedded script">
+  <meta property="og:description" content="Sample Company card test: the card image is an SVG carrying onload + script. It must be rendered as an inert image, never embedded as a document.">
+  <meta property="og:image" content="https://alipinski-qa.github.io/public-pages/QA-ESFC-og-xss.svg">
+  <meta property="og:image:type" content="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sample Company">
+  <meta property="og:url" content="">
+
+  <title>Card test - og:image SVG script</title>
+  <style>
+    body { font: 15px/1.5 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; color: #172b4d; }
+    code { background: #f4f5f7; padding: .1em .3em; border-radius: 3px; }
+    h1 { font-size: 1.3rem; }
+  </style>
+</head>
+<body>
+  <h1>Card image - SVG with script</h1>
+  <p>Sample Company QA harness page. The <code>og:image</code> is <code>xss.svg</code>, which carries an <code>onload</code> handler and a <code>&lt;script&gt;</code>.</p>
+  <p>Expected: the card shows the SVG as an inert image. An <code>alert()</code> means it was embedded as an executable document.</p>
+</body>
+</html>
